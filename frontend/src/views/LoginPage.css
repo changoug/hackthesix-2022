@@ -1,0 +1,85 @@
+.left {
+  height: 100vh;
+  width: 50vw;
+  background-color: white;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login {
+  /* font-family: "Roboto"; */
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 44px;
+  font-weight: 800;
+}
+.email-label {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+.email {
+  display: block;
+  margin-bottom: 23px;
+  width: 518px;
+  height: 53px;
+  font-size: 24px;
+  border-radius: 100px;
+  border: black solid;
+  text-indent: 15px;
+}
+.email::placeholder {
+  position: relative;
+  font-style: italic;
+  left: 32.15px;
+}
+.password-label {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+.password {
+  display: block;
+  margin: 5px 0;
+  width: 518px;
+  height: 53px;
+  font-size: 24px;
+  border-radius: 100px;
+  border: black solid;
+  margin-bottom: 31px;
+  text-indent: 15px;
+}
+.password::placeholder {
+  font-style: italic;
+  position: relative;
+  left: 32.15px;
+}
+.divider {
+  margin-bottom: 29px;
+}
+.login-button {
+  width: 518px;
+  height: 63px;
+  border-radius: 100px;
+  border: #cccccc solid;
+  background-color: #ff9e3d;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+}
+.right {
+  float: right;
+  height: 100vh;
+  width: 50vw;
+  background-color: #ff9e3d;
+}
+
+.Map {
+  position: relative;
+  height: 600px;
+  top: 100px;
+  left: 120px;
+}
