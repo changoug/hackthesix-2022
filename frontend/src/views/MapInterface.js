@@ -1,7 +1,7 @@
 import React, { Component, useState, useRef } from 'react';
 import { GoogleMap, InfoWindow, LoadScript, Marker, useJsApiLoader, DistanceMatrixService } from '@react-google-maps/api';
 
-const MapInterface = () => {
+const MapInterface = (props) => {
     const [helpLocation, setHelpLocation] = useState({})
 
     const { isLoaded } = useJsApiLoader({
@@ -37,7 +37,7 @@ const MapInterface = () => {
           email: "myemail@gmail.com"
         }
       }
-    ]
+    ];
 
     return ( isLoaded ? (
         <GoogleMap
@@ -65,7 +65,13 @@ const MapInterface = () => {
                 position={helpLocation.location}
                 clickable={true}
                 onCloseClick={() => setHelpLocation({})}>
-                  <p>{helpLocation.title}</p>
+                  <div>
+                    <img src={'https://fox5sandiego.com/wp-content/uploads/sites/15/2022/05/okmulgeeimage2crop.jpg?w=768'} width='300px' style={{marginTop: 10}}/>
+                    <h2>{helpLocation.title}</h2>
+                    <p>{helpLocation.contact.phone}</p>
+                    <p>{helpLocation.contact.email}</p>
+                    <p>{helpLocation.description}</p>
+                  </div>
                 </InfoWindow>
               )
             }
