@@ -23,6 +23,7 @@ function LandingPage() {
               className="email input"
               placeholder="example@email.com"
               id="#email"
+              type="email"
             ></input>
             <span className="label">Password</span>
             <input
