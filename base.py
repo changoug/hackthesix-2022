@@ -2,15 +2,10 @@ from flask import Flask, session, request
 import requests
 import os
 import psycopg2
+import uuid
+from helper_functions import get_db_connection, get_filtered_ticks
 
 api = Flask(__name__)
-
-def get_db_connection():
-    conn = psycopg2.connect(host='localhost',
-                            database='flask_db',
-                            user=os.environ['DB_USERNAME'],
-                            password=os.environ['DB_PASSWORD'])
-    return conn
 
 @api.route('/register')
 def register():
@@ -26,36 +21,74 @@ def register():
     # If user misses input field.
     if not (user_firstname and user_lastname and user_password and user_email, user_unit and user_street and user_city and user_country):
         return
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
 
     # If user already exists.
-    rows = db.execute("SELECT * FROM users WHERE email = :email", email=user_email)
+    rows = cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
     if len(rows) == 1:
+        cur.close()
+        conn.close()
         return
 
     # Generate UUID
     user_uuid = uuid.uuid4()
 
     # Register user.
-    reg_user = db.execute(
-        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (id, firstname, lastname, password, email, unit, street, city, country)", 
-        id=user_uuid,
-        firstname=user_firstname, 
-        lastname=user_lastname, 
-        password=user_password, 
-        email=user_email, 
-        unit=user_unit,
-        street=user_street,
-        city=user_city,
-        country=user_country
+    reg_user = cur.execute(
+        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+        (
+            user_uuid,
+            user_firstname, 
+            user_lastname, 
+            user_password, 
+            user_email, 
+            user_unit,
+            user_street,
+            user_city,
+            user_country
+        )
     )
 
-    session["user_id"] = reg_user
-    flash(f"You have Registered as {reg_username}!")
+    session["user_id"] = user_uuid
+    return session["user_id"]
 
 @api.route('/login')
 def login():
+    return
 
-@api.route('/map', methods=['GET'])
+@api.route('/logout')
+def logout():
+    session.clear()
+    return session["user_id"]
+
+@api.route('/edit-profile', methods=["PATCH"])
+def edit_profile():
+    update_profile = request.get_json()
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        'UPDATE users SET firstname=%s, lastname=%s, password=%s, email=%s, unit=%s, street=%s, city=%s, country=%s WHERE userid == %s',
+        (
+            update_profile.user_uuid,
+            update_profile.user_firstname, 
+            update_profile.user_lastname, 
+            update_profile.user_password, 
+            update_profile.user_email, 
+            update_profile.user_unit,
+            update_profile.user_street,
+            update_profile.user_city,
+            update_profile.user_country
+        )
+    )
+    users = cur.fetchall()
+    cur.close()
+    conn.close()
+    return users
+    
+@api.route('/test', methods=['GET'])
 def get_db_values():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -78,20 +111,3 @@ def get_db_values():
     cur.close()
     conn.close()
     return books
-
-@api.route('/map/radius/<origin>/<dest>/<radius>', methods=['GET'])
-def get_filtered_ticks(origin, dest, radius):
-    result = []
-    for d in dest:
-        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin}&destinations={d}&key=AIzaSyCi4Z6r3IAxS0ywrRniNwvzUFreM7poFyk'
-        res = requests.get(url)
-        if res.status_code == 200 and res.json()['rows'][0]['elements'][0]['status'] != 'NOT_FOUND':
-            dist = res.json()['rows'][0]['elements'][0]['distance']['text']
-            dur = res.json()['rows'][0]['elements'][0]['duration']['text']
-            if dist <= radius:
-                result.append({'dist': dist, 'dur': dur})
-    return result
-
-@api.route('/profile', methods=['GET'])
-def get_profile():
-    return {'name': 'John', 'age': '30'}
