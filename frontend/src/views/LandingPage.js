@@ -7,6 +7,10 @@ import "./LandingPage.css";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const landingRouteChange = () => {
+    const path = "/";
+    navigate(path);
+  };
   const customerRouteChange = () => {
     const path = "/customer-login";
     navigate(path);
@@ -19,7 +23,7 @@ const LandingPage = () => {
   return (
     <main>
       <div className="content-container">
-        <h1>Warepair</h1>
+        <h1 onClick={landingRouteChange}>Warepair</h1>
         <img className="logo" src={logo} alt="Warepair Logo" />
         <h2>All your repairs in one click.</h2>
         <h3>Connecting local contractors with your reparis.</h3>

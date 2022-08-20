@@ -5,6 +5,8 @@
   --theme-white: #ffffff;
   --button-blue: #44B1Cf;
   --button-light-blue: #6dc8cf;
+  --button-theme: #ff9e3d;
+  --button-theme-hover: #f7ae65;
   --border-gray: #cccccc;
   --border-theme-light:#f7ae65;
   --border-theme:#ff9e3d;
@@ -12,6 +14,7 @@
   --font-black: #000000;
   --font-gray: #888888;
   --font-white: #ffffff;
+  --shadow: #aaaaaa;
 }
 
 .content-container {
@@ -39,6 +42,7 @@ h1, h2, h3 {
 
 h1 {
   font-size: 2.5em;
+  cursor: pointer;
 }
 
 hr {
@@ -57,13 +61,19 @@ hr {
 .button {
   height: 2.5rem;
   width: 15rem;
-  background-color: var(--theme);
-  border: 2px solid var(--border-theme-light);
+  background-color: var(--button-theme);
   border-radius: 2.5em;
+  border: None;
   color: var(--font-white);
   font-weight: bolder;
   font-size: 1.25rem;
   cursor: pointer;
+}
+
+.button:hover {
+  border: 2px solid var(--border-theme-light);
+  background-color: var(--button-theme-hover);
+  box-shadow: 0 1px 3px var(--shadow);
 }
 
 footer {
