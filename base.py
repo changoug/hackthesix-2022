@@ -54,8 +54,9 @@ def register():
     return session["user_id"]
 
 @api.route('/login')
-def login():
+def login(email, password):
     return
+    
 
 @api.route('/logout')
 def logout():
