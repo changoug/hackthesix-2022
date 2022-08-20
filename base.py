@@ -3,7 +3,7 @@ import requests
 import os
 import psycopg2
 import uuid
-from helper_functions import get_db_connection, get_filtered_ticks
+from util import get_db_connection, get_filtered_ticks
 
 api = Flask(__name__)
 
@@ -39,17 +39,19 @@ def register():
     user_uuid = uuid.uuid4()
 
     # Register user.
-    reg_user = cur.execute(
-        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (id, firstname, lastname, password, email, unit, street, city, country)", 
-        id=user_uuid,
-        firstname=user_firstname, 
-        lastname=user_lastname, 
-        password=user_password, 
-        email=user_email, 
-        unit=user_unit,
-        street=user_street,
-        city=user_city,
-        country=user_country
+    cur.execute(
+        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+        (
+            user_uuid,
+            user_firstname, 
+            user_lastname, 
+            user_password, 
+            user_email, 
+            user_unit,
+            user_street,
+            user_city,
+            user_country
+        )
     )
 
     session["user_id"] = user_uuid
@@ -117,19 +119,6 @@ def get_db_values():
     cur.close()
     conn.close()
     return tables
-
-@api.route('/map/radius/<origin>/<dest>/<radius>', methods=['GET'])
-def get_filtered_ticks(origin, dest, radius):
-    result = []
-    for d in dest:
-        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin}&destinations={d}&key=AIzaSyCi4Z6r3IAxS0ywrRniNwvzUFreM7poFyk'
-        res = requests.get(url)
-        if res.status_code == 200 and res.json()['rows'][0]['elements'][0]['status'] != 'NOT_FOUND':
-            dist = res.json()['rows'][0]['elements'][0]['distance']['text']
-            dur = res.json()['rows'][0]['elements'][0]['duration']['text']
-            if dist <= radius:
-                result.append({'dist': dist, 'dur': dur})
-    return result
 
 @api.route('/helpRequests', methods=['GET', 'POST', 'DELETE'])
 def handle_help_requests():
