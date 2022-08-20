@@ -24,7 +24,20 @@ const MapInterface = (props) => {
     lng: -38.523
     };
 
-    const helpRequests = props.helperRequests;
+    const helpRequests = [
+      {
+        title: "Clogged Toilet",
+        description: "Help me unclog toilet!",
+        location: {
+          lat: -3.745,
+          lng: -38.523
+        },
+        contact: {
+          phone: "647-647-6477",
+          email: "myemail@gmail.com"
+        }
+      }
+    ];
 
     return ( isLoaded ? (
         <GoogleMap
