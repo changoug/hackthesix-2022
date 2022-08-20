@@ -39,10 +39,6 @@ const MapInterface = () => {
       }
     ]
 
-    console.log(google);
-
-    console.log(calculateRoute());
-
     return ( isLoaded ? (
         <GoogleMap
             center={center}
@@ -58,7 +54,6 @@ const MapInterface = () => {
                   position={item.location}
                   onClick={() => {
                     setHelpLocation(item);
-                    calculateRoute()
                   }}
                   />
                 )
