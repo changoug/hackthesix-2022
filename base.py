@@ -3,10 +3,7 @@ import requests
 import os
 import psycopg2
 import uuid
-<<<<<<< HEAD
-=======
-from helper_functions import get_db_connection, get_filtered_ticks
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
+from util import get_db_connection, get_filtered_ticks
 
 api = Flask(__name__)
 
@@ -42,29 +39,7 @@ def register():
     user_uuid = uuid.uuid4()
 
     # Register user.
-    reg_user = cur.execute(
-<<<<<<< HEAD
-        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (id, firstname, lastname, password, email, unit, street, city, country)", 
-        id=user_uuid,
-        firstname=user_firstname, 
-        lastname=user_lastname, 
-        password=user_password, 
-        email=user_email, 
-        unit=user_unit,
-        street=user_street,
-        city=user_city,
-        country=user_country
-    )
-
-    session["user_id"] = reg_user
-    print(type(session["user_id"]))
-    print(session["user_id"])
-    # flash(f"You have Registered as {reg_username}!")
-
-@api.route('/login')
-def login():
-    pass
-=======
+    cur.execute(
         "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
         (
             user_uuid,
@@ -85,7 +60,6 @@ def login():
 @api.route('/login')
 def login():
     return
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
 
 @api.route('/logout')
 def logout():
@@ -144,21 +118,7 @@ def get_db_values():
     tables = cur.fetchall()
     cur.close()
     conn.close()
-<<<<<<< HEAD
     return tables
-
-@api.route('/map/radius/<origin>/<dest>/<radius>', methods=['GET'])
-def get_filtered_ticks(origin, dest, radius):
-    result = []
-    for d in dest:
-        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin}&destinations={d}&key=AIzaSyCi4Z6r3IAxS0ywrRniNwvzUFreM7poFyk'
-        res = requests.get(url)
-        if res.status_code == 200 and res.json()['rows'][0]['elements'][0]['status'] != 'NOT_FOUND':
-            dist = res.json()['rows'][0]['elements'][0]['distance']['text']
-            dur = res.json()['rows'][0]['elements'][0]['duration']['text']
-            if dist <= radius:
-                result.append({'dist': dist, 'dur': dur})
-    return result
 
 @api.route('/helpRequests', methods=['GET', 'POST', 'DELETE'])
 def handle_help_requests():
@@ -194,10 +154,3 @@ def handle_help_requests():
 
     cur.close()
     conn.close()
-
-@api.route('/profile', methods=['GET'])
-def get_profile():
-    return {'name': 'John', 'age': '30'}
-=======
-    return books
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
