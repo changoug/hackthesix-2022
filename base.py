@@ -2,6 +2,7 @@ from flask import Flask, session, request
 import requests
 import os
 import psycopg2
+import uuid
 
 api = Flask(__name__)
 
@@ -14,6 +15,9 @@ def get_db_connection():
 
 @api.route('/register')
 def register():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
     user_firstname = request.form.get("first_name")
     user_lastname = request.form.get("last_name")
     user_password = request.form.get("password")
@@ -28,7 +32,7 @@ def register():
         return
 
     # If user already exists.
-    rows = db.execute("SELECT * FROM users WHERE email = :email", email=user_email)
+    rows = cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
     if len(rows) == 1:
         return
 
@@ -36,7 +40,7 @@ def register():
     user_uuid = uuid.uuid4()
 
     # Register user.
-    reg_user = db.execute(
+    reg_user = cur.execute(
         "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (id, firstname, lastname, password, email, unit, street, city, country)", 
         id=user_uuid,
         firstname=user_firstname, 
@@ -50,34 +54,42 @@ def register():
     )
 
     session["user_id"] = reg_user
-    flash(f"You have Registered as {reg_username}!")
+    print(type(session["user_id"]))
+    print(session["user_id"])
+    # flash(f"You have Registered as {reg_username}!")
 
 @api.route('/login')
 def login():
+    pass
 
 @api.route('/map', methods=['GET'])
 def get_db_values():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS books;')
-    cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
-                                    'title varchar (150) NOT NULL,'
-                                    'author varchar (50) NOT NULL,'
-                                    'pages_num integer NOT NULL,'
-                                    'review text,'
-                                    'date_added date DEFAULT CURRENT_TIMESTAMP);'
-                                    )
-    cur.execute('INSERT INTO books (title, author, pages_num, review)'
-                'VALUES (%s, %s, %s, %s)',
-                ('A Tale of Two Cities',
-                'Charles Dickens',
-                489,
-                'A great classic!')
-                )
-    books = cur.fetchall()
+    cur.execute('DROP TABLE IF EXISTS users;')
+    cur.execute('CREATE TABLE users (user_id varchar (100) PRIMARY KEY NOT NULL,'
+                                    'first_name varchar (50) NOT NULL,'
+                                    'last_name varchar (50) NOT NULL,'
+                                    'email varchar (50) NOT NULL,'
+                                    'password varchar (50) NOT NULL,'
+                                    'location varchar (100)',
+                                    'is_contractor tinyint(1) NOT NULL,'
+    )
+    cur.execute('DROP TABLE IF EXISTS requests;')
+    cur.execute('CREATE TABLE requests (request_id varchar (100) PRIMARY KEY NOT NULL,',
+                                    'user_id varchar (50) NOT NULL,',
+                                    'title varchar (50) NOT NULL,'
+                                    'request description varchar (50) NOT NULL,'
+                                    'location varchar (100) NOT NULL,'
+                                    'contact_info varchar (100) NOT NULL,'
+                                    'compensation varchar (50) NOT NULL,'
+                                    'is_complete BOOLEAN NOT NULL,'
+    )
+
+    tables = cur.fetchall()
     cur.close()
     conn.close()
-    return books
+    return tables
 
 @api.route('/map/radius/<origin>/<dest>/<radius>', methods=['GET'])
 def get_filtered_ticks(origin, dest, radius):
@@ -92,15 +104,40 @@ def get_filtered_ticks(origin, dest, radius):
                 result.append({'dist': dist, 'dur': dur})
     return result
 
-@api.route('/helpRequests', methods=['GET'])
-def get_help_requests():
+@api.route('/helpRequests', methods=['GET', 'POST', 'DELETE'])
+def handle_help_requests():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM books;')
-    help_requests = cur.fetchall()
+
+    # get all help requests
+    if request.method == 'GET':
+        cur.execute('SELECT * FROM requests;')
+        help_requests = cur.fetchall()
+
+        return help_requests
+
+    # create a new help request
+    elif request.method == 'POST':
+        request_id = uuid.uuid4()
+        title = request.form.get("title")
+        description = request.form.get("description")
+        location = request.form.get("location")
+        contact_info = request.form.get("contact_info")
+        compensation = request.form.get("compensation")
+        user_id = session["user_id"]
+        
+        cur.execute('INSERT INTO requests (request_id, title, description, location, contact_info, compensation, user_id)'
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (request_id, title, description, location, contact_info, compensation, user_id)
+                    )
+
+    # delete a help request
+    elif request.method == 'DELETE':
+        request_id = request.form.get("request_id")
+        cur.execute('DELETE FROM requests WHERE request_id = %s', (request_id,))
+
     cur.close()
     conn.close()
-    return help_requests
 
 @api.route('/profile', methods=['GET'])
 def get_profile():
