@@ -1,9 +1,10 @@
 import psycopg2
 from flask import request
+import os
 
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
-                            database='ht6_db',
+                            database='flask_db',
                             user=os.environ['DB_USERNAME'],
                             password=os.environ['DB_PASSWORD'])
     return conn
