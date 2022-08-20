@@ -50,6 +50,16 @@ def get_filtered_ticks(origin, dest, radius):
                 result.append({'dist': dist, 'dur': dur})
     return result
 
+@api.route('/helpRequests', methods=['GET'])
+def get_help_requests():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM books;')
+    help_requests = cur.fetchall()
+    cur.close()
+    conn.close()
+    return help_requests
+
 @api.route('/profile', methods=['GET'])
 def get_profile():
     return {'name': 'John', 'age': '30'}
