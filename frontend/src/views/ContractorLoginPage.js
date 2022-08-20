@@ -27,6 +27,7 @@ function LandingPage() {
               className="password input"
               placeholder="e.g. ilovedavid"
               id="#password"
+              type="password"
             ></input>
             <hr />
             <button className="login-button">Login</button>
