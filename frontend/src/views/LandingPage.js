@@ -11,12 +11,8 @@ const LandingPage = () => {
     const path = "/";
     navigate(path);
   };
-  const customerRouteChange = () => {
-    const path = "/customer-login";
-    navigate(path);
-  };
-  const contractorRouteChange = () => {
-    const path = "/contractor-login";
+  const loginRouteChange = () => {
+    const path = "/login";
     navigate(path);
   };
 
@@ -32,16 +28,9 @@ const LandingPage = () => {
           <button
             id="customer-login"
             className="button"
-            onClick={customerRouteChange}
+            onClick={loginRouteChange}
           >
-            Customer Login
-          </button>
-          <button
-            id="contractor-login"
-            className="button"
-            onClick={contractorRouteChange}
-          >
-            Contractor Login
+            Login
           </button>
         </div>
       </div>

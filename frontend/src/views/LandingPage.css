@@ -51,7 +51,7 @@ h2, h3 {
 }
 
 hr {
-  width: 45%;
+  width: 410px;
   border: 3px solid var(--theme);
   border-radius: 1vh;
 }
