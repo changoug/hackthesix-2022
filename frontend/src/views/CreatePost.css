@@ -1,0 +1,50 @@
+.main-create {
+  float: left;
+  height: 100vh;
+  width: 50vw;
+  background-color: #ff9e3d;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+.form-div {
+  display: block;
+  position: relative;
+  top: 122px;
+  left: 84px;
+  width: 50%;
+}
+.form-div input {
+  box-sizing: border-box;
+  /* width: 725px;
+  height: 44px; */
+
+  background: #ffffff;
+  border: 2px solid #cccccc;
+  border-radius: 50px;
+  margin-bottom: 10px;
+  width: 500px;
+}
+.form-div span {
+  color: #ffffff;
+  display: block;
+  margin-bottom: 3px;
+}
+.form-div textarea {
+  width: 300px;
+  height: 150px;
+  border-radius: 25px;
+}
+.form-div button {
+  background-color: #44b1cf;
+  display: block;
+  border-radius: 100px;
+  border: 2px solid #cccccc;
+  width: 106px;
+  height: 49px;
+  font-weight: 700;
+  color: white;
+}
+.preview {
+  background-color: #ffffff;
+}
