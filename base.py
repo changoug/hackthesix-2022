@@ -3,10 +3,7 @@ import requests
 import os
 import psycopg2
 import uuid
-<<<<<<< HEAD
-=======
 from helper_functions import get_db_connection, get_filtered_ticks
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
 
 api = Flask(__name__)
 
@@ -32,7 +29,7 @@ def register():
     cur = conn.cursor()
 
     # If user already exists.
-    rows = cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
+    rows = cur.execute(f"SELECT * FROM users WHERE email = '{user_email}';")
     if len(rows) == 1:
         cur.close()
         conn.close()
@@ -43,7 +40,6 @@ def register():
 
     # Register user.
     reg_user = cur.execute(
-<<<<<<< HEAD
         "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (id, firstname, lastname, password, email, unit, street, city, country)", 
         id=user_uuid,
         firstname=user_firstname, 
@@ -56,36 +52,12 @@ def register():
         country=user_country
     )
 
-    session["user_id"] = reg_user
-    print(type(session["user_id"]))
-    print(session["user_id"])
-    # flash(f"You have Registered as {reg_username}!")
-
-@api.route('/login')
-def login():
-    pass
-=======
-        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
-        (
-            user_uuid,
-            user_firstname, 
-            user_lastname, 
-            user_password, 
-            user_email, 
-            user_unit,
-            user_street,
-            user_city,
-            user_country
-        )
-    )
-
     session["user_id"] = user_uuid
     return session["user_id"]
 
 @api.route('/login')
 def login():
     return
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
 
 @api.route('/logout')
 def logout():
@@ -144,7 +116,6 @@ def get_db_values():
     tables = cur.fetchall()
     cur.close()
     conn.close()
-<<<<<<< HEAD
     return tables
 
 @api.route('/map/radius/<origin>/<dest>/<radius>', methods=['GET'])
@@ -194,10 +165,3 @@ def handle_help_requests():
 
     cur.close()
     conn.close()
-
-@api.route('/profile', methods=['GET'])
-def get_profile():
-    return {'name': 'John', 'age': '30'}
-=======
-    return books
->>>>>>> 662371ea436eb8d9873f69bb4e3e40abbd02dd11
