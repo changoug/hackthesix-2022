@@ -14,16 +14,16 @@ def register():
     conn = get_db_connection()
     cur = conn.cursor()
 
-    user_firstname = 'Neil'
-    user_lastname = 'Armstrong'
-    user_password = 'password'
-    user_email = 'neil@gmail.com'
-    user_unit = '321'
-    user_street = 'Main St'
-    user_city = 'Boston'
-    user_country = 'USA'
-    user_is_contractor = True
-    user_radius = '10'
+    user_firstname = request.form["firstname"]
+    user_lastname = request.form["lastname"]
+    user_password = request.form["password"]
+    user_email = request.form["email"]
+    user_unit = request.form["unit"]
+    user_street = request.form["street"]
+    user_city = request.form["city"]
+    user_country = request.form["country"]
+    user_is_contractor = request.form["is_contractor"]
+    user_radius = request.form["radius"]
     
     conn = get_db_connection()
     cur = conn.cursor()
@@ -166,7 +166,7 @@ def logout():
 #     conn.close()
 #     return tables
 
-@api.route('/helpRequests', methods=['GET', 'POST'])
+@api.route('/helpRequests', methods=['GET', 'POST', 'PATCH'])
 def handle_help_requests():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -182,11 +182,11 @@ def handle_help_requests():
     # create a new help request
     elif request.method == 'POST':
         request_id = uuid.uuid4()
-        title = 'Clogged toilet'
-        description = 'Help! My toilet is clogged!'
-        location = 'Toronto'
-        contact_info = '911'
-        compensation = '$100'
+        title = request.form["title"]
+        description = request.form["description"]
+        location = request.form["location"]
+        contact_info = request.form["contact_info"]
+        compensation = request.form["compensation"]
         user_id = session["user_id"]
         
         cur.execute('INSERT INTO requests (request_id, title, request_description, location, contact_info, compensation, user_id, is_complete)'
