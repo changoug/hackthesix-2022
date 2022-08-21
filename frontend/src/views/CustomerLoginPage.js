@@ -1,11 +1,35 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Map from "../assets/map.jpg";
+import axios from "axios";
 
 import "./LoginPage.css";
 
+const baseURL = "http://127.0.0.1:5000";
+
 function LandingPage() {
+
+  // email: 'johndoe@gmail.com',
+  // password: "password"
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [res, setRes] = React.useState("");
+
+  function login(email, password) {
+    axios
+      .post(baseURL + '/login', {
+        email: email,
+        password: password
+      }, { withCredentials: false })
+      .then((response) => {
+        setRes(response);
+        console.log(response)
+      });
+  }
+
   const navigate = useNavigate();
+
   const createAccountRouteChange = () => {
     const path = "/create-account";
     navigate(path);
@@ -24,6 +48,8 @@ function LandingPage() {
               placeholder="example@email.com"
               id="#email"
               type="email"
+              onChange={event => setEmail(event.target.value)}
+              value={email}
             ></input>
             <span className="label">Password</span>
             <input
@@ -31,9 +57,15 @@ function LandingPage() {
               placeholder="e.g. ilovedavid"
               id="#password"
               type="password"
+              onChange={event => setPassword(event.target.value)}
+              value={password}
             ></input>
             <hr className="divider" />
-            <button className="login-button" onClick={() => navigate("/map", { replace: true })}>Login</button>
+            <button type='submit' className="login-button" onClick={() => {
+              login(email, password)
+              navigate("/map")
+              }
+            }>Login</button>
             <p className="createAccountText">
               Don't have an account?{" "}
               <span

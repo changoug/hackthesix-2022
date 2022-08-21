@@ -1,13 +1,17 @@
-from flask import Flask, session, request
+from flask import Flask, request, jsonify
 import psycopg2
 import psycopg2.extras
 import uuid
 from util import get_db_connection, get_filtered_ticks
 from emailjs import trigger_email_creation
+from flask_cors import CORS, cross_origin
 
 api = Flask(__name__)
 api.config['SECRET_KEY'] = 'secret'
 psycopg2.extras.register_uuid()
+CORS(api)
+
+session = {}
 
 @api.route('/register', methods=['POST'])
 def register():
@@ -55,9 +59,13 @@ def register():
     return str(session["user_id"]) + ' registered'
 
 @api.route('/login', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    request_json = request.json
+    email = request_json['email']
+    password = request_json['password']
+
+    print(email, password)
 
     conn = get_db_connection()
     cur = conn.cursor()
@@ -69,7 +77,7 @@ def login():
         cur.close()
         conn.close()
         return 'Email and password do not match'
-
+    
     session["user_id"] = rows[0][0]
     return 'Logged in'
     
@@ -167,17 +175,22 @@ def logout():
 #     return tables
 
 @api.route('/helpRequests', methods=['GET', 'POST', 'PATCH'])
+@cross_origin(supports_credentials=True)
+
 def handle_help_requests():
     conn = get_db_connection()
     cur = conn.cursor()
 
+    print("session", session.get("user_id", 0))
+
     # get all help requests
     if request.method == 'GET':
-        cur.execute('SELECT * FROM requests WHERE (is_complete == FALSE AND user_id == %s);', session["user_id"])
+        cur.execute("""SELECT * FROM requests WHERE is_complete = false AND user_id = %s :: VARCHAR;""", [session["user_id"]])
         help_requests = cur.fetchall()
         cur.close()
         conn.close()
-        return help_requests
+        print('request tings mahn', help_requests)
+        return jsonify(help_requests)
         
     # create a new help request
     elif request.method == 'POST':
