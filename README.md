@@ -1,6 +1,7 @@
 # Warepair
 
 ![Login Page](imgs/1.png)
+![Map Interface](assets/Map_Interface.png)
 
 ## Description
 Warepair is a web app that bridges the gap between these two groups of people. It is a platform that allows contractors and clients to easily find each other.
