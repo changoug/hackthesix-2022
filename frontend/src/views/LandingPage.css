@@ -40,18 +40,18 @@
 
 .content-container h1 {
   font-size: 2.5em;
-  cursor: pointer;
   color: var(--font-theme-dark);
   margin: 0;
 }
-.content-container h1:hover {
-  text-shadow: 0 1px 3px var(--shadow);
-}
-
 .content-container h2, 
 .content-container h3 {
   color: var(--font-theme);
   margin: 0;
+}
+.content-container h1:hover,
+.content-container h2:hover,
+.content-container h3:hover {
+  text-shadow: 0 1px 3px var(--shadow);
 }
 
 .landing-page-divider {
