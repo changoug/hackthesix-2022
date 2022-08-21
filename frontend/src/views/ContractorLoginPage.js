@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-import Map from "../imgs/Map.jpg";
+import Map from "../assets/map.jpg";
 function LandingPage() {
   const navigate = useNavigate();
   const createAccountRouteChange = () => {
