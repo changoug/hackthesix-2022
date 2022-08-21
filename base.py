@@ -1,92 +1,76 @@
 from flask import Flask, session, request
+import psycopg2
+import psycopg2.extras
 import uuid
 from util import get_db_connection, get_filtered_ticks
 
 api = Flask(__name__)
+api.config['SECRET_KEY'] = 'secret'
+psycopg2.extras.register_uuid()
 
-@api.route('/register')
+@api.route('/register', methods=['POST'])
 def register():
     conn = get_db_connection()
     cur = conn.cursor()
 
-    user_firstname = request.form.get("first_name")
-    user_lastname = request.form.get("last_name")
-    user_password = request.form.get("password")
-    user_email = request.form.get("email")
-    user_unit = request.form.get("unit")
-    user_street = request.form.get("street")
-    user_city = request.form.get("city")
-    user_country = request.form.get("country")
-
-    # If user misses input field.
-    if not (user_firstname and user_lastname and user_password and user_email, user_unit and user_street and user_city and user_country):
-        return
+    user_firstname = 'Neil'
+    user_lastname = 'Armstrong'
+    user_password = 'password'
+    user_email = 'neil@gmail.com'
+    user_unit = '321'
+    user_street = 'Main St'
+    user_city = 'Boston'
+    user_country = 'USA'
+    user_is_contractor = True
+    user_radius = '10'
     
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # If user already exists.
-    cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
-    if len(cur.fetchall()) == 1:
+    # If user misses input field.
+    if not (user_firstname and user_lastname and user_password and user_email and user_unit and user_street and user_city and user_country):
         cur.close()
         conn.close()
-        return
+        return 'Missing input field'
 
     # Generate UUID
     user_uuid = uuid.uuid4()
 
-    # Register user.
+    # If user already exists.
+    cur.execute(f"SELECT * FROM users WHERE user_id = '{user_uuid}'")
+    rows = cur.fetchall()
+    if rows:
+        cur.close()
+        conn.close()
+        return 'User already exists'
+
+    # Register user
     cur.execute(
-        "INSERT INTO users (userid, firstname, lastname, password, email, unit, street, city, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
-        (
-            user_uuid,
-            user_firstname, 
-            user_lastname, 
-            user_password, 
-            user_email, 
-            user_unit,
-            user_street,
-            user_city,
-            user_country
-        )
-    )
+        "INSERT INTO users (user_id, first_name, last_name, email, password, location, is_contractor, radius) VALUES " +
+        f"('{user_uuid}', '{user_firstname}', '{user_lastname}', '{user_email}', '{user_password}', '{user_unit}, {user_street}, {user_city}, {user_country}', {user_is_contractor}, {user_radius})")
 
+    conn.commit()
     session["user_id"] = user_uuid
-    return session["user_id"]
 
-@api.route('/login')
+    cur.close()
+    conn.close()
+    return str(session["user_id"]) + ' registered'
+
+@api.route('/login', methods=['POST'])
 def login():
-    return
-
-@api.route('/logout')
-def logout():
-    session.clear()
-    return session["user_id"]
-
-@api.route('/edit-profile', methods=["PATCH"])
-def edit_profile():
-    update_profile = request.get_json()
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute(
-        'UPDATE users SET firstname=%s, lastname=%s, password=%s, email=%s, unit=%s, street=%s, city=%s, country=%s WHERE userid == %s',
-        (
-            update_profile.user_uuid,
-            update_profile.user_firstname, 
-            update_profile.user_lastname, 
-            update_profile.user_password, 
-            update_profile.user_email, 
-            update_profile.user_unit,
-            update_profile.user_street,
-            update_profile.user_city,
-            update_profile.user_country
-        )
-    )
-    users = cur.fetchall()
-    cur.close()
-    conn.close()
-    return users
+
+    cur.execute(f"SELECT * FROM users WHERE email = '{email}' AND password = '{password}'")
+    rows = cur.fetchall()
+
+    if rows == None:
+        cur.close()
+        conn.close()
+        return 'Email and password do not match'
     
 @api.route('/test', methods=['GET'])
 def get_db_values():
@@ -117,7 +101,71 @@ def get_db_values():
     conn.close()
     return tables
 
-@api.route('/helpRequests', methods=['GET', 'POST', 'PATCH'])
+@api.route('/logout', methods=['POST'])
+def logout():
+    if 'user_id' in session:
+        temp = session['user_id']
+        session.pop('user_id', None)
+        return str(temp) + ' logged out'
+    else:
+        return 'No user logged in'
+
+# @api.route('/edit-profile', methods=["PATCH"])
+# def edit_profile():
+#     update_profile = request.get_json()
+
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute(
+#         'UPDATE users SET firstname=%s, lastname=%s, password=%s, email=%s, unit=%s, street=%s, city=%s, country=%s WHERE userid == %s',
+#         (
+#             update_profile.user_uuid,
+#             update_profile.user_firstname, 
+#             update_profile.user_lastname, 
+#             update_profile.user_password, 
+#             update_profile.user_email, 
+#             update_profile.user_unit,
+#             update_profile.user_street,
+#             update_profile.user_city,
+#             update_profile.user_country
+#         )
+#     )
+#     users = cur.fetchall()
+#     cur.close()
+#     conn.close()
+#     return users
+    
+# @api.route('/test', methods=['GET'])
+# def get_db_values():
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute('DROP TABLE IF EXISTS users;')
+#     cur.execute('CREATE TABLE users (user_id (uuid) PRIMARY KEY NOT NULL,'
+#                                     'first_name varchar (50) NOT NULL,'
+#                                     'last_name varchar (50) NOT NULL,'
+#                                     'email varchar (50) NOT NULL,'
+#                                     'password varchar (50) NOT NULL,'
+#                                     'location varchar (100)',
+#                                     'is_contractor BOOLEAN NOT NULL,',
+#                                     'radius integer);'
+#     )
+#     cur.execute('DROP TABLE IF EXISTS requests;')
+#     cur.execute('CREATE TABLE requests (request_id (uuid) PRIMARY KEY NOT NULL,',
+#                                     'user_id varchar (50) NOT NULL,',
+#                                     'title varchar (50) NOT NULL,'
+#                                     'request_description varchar (50) NOT NULL,'
+#                                     'location varchar (100) NOT NULL,'
+#                                     'contact_info varchar (100) NOT NULL,'
+#                                     'compensation varchar (50) NOT NULL,'
+#                                     'is_complete BOOLEAN NOT NULL);'
+#     )
+
+#     tables = cur.fetchall()
+#     cur.close()
+#     conn.close()
+#     return tables
+
+@api.route('/helpRequests', methods=['GET', 'POST'])
 def handle_help_requests():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -126,22 +174,23 @@ def handle_help_requests():
     if request.method == 'GET':
         cur.execute('SELECT * FROM requests WHERE (is_complete == FALSE AND user_id == %s);', session["user_id"])
         help_requests = cur.fetchall()
-
+        cur.close()
+        conn.close()
         return help_requests
-
+        
     # create a new help request
     elif request.method == 'POST':
         request_id = uuid.uuid4()
-        title = request.form.get("title")
-        description = request.form.get("description")
-        location = request.form.get("location")
-        contact_info = request.form.get("contact_info")
-        compensation = request.form.get("compensation")
+        title = 'Clogged toilet'
+        description = 'Help! My toilet is clogged! I cannot poop properly!'
+        location = 'Toronto'
+        contact_info = '911'
+        compensation = '$100'
         user_id = session["user_id"]
         
-        cur.execute('INSERT INTO requests (request_id, title, description, location, contact_info, compensation, user_id)'
-                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                    (request_id, title, description, location, contact_info, compensation, user_id)
+        cur.execute('INSERT INTO requests (request_id, title, request_description, location, contact_info, compensation, user_id, is_complete)'
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                    (request_id, title, description, location, contact_info, compensation, user_id, False)
                     )
 
     # patch a help request
@@ -149,5 +198,7 @@ def handle_help_requests():
         request_id = request.form.get("request_id")
         cur.execute('UPDATE requests SET is_complete == TRUE WHERE request_id = %s', (request_id))
 
-    cur.close()
-    conn.close()
+        conn.commit()
+        cur.close()
+        conn.close()
+        return f'Request {request_id} created'

@@ -1,0 +1,105 @@
+:root {
+  --theme: #ff9e3d;
+  --theme-dark: #ff8b17;
+  --theme-light: #f7ae65;
+  --theme-white: #ffffff;
+  --button-blue: #44B1Cf;
+  --button-light-blue: #6dc8cf;
+  --button-theme: #ff9e3d;
+  --button-theme-hover: #f7ae65;
+  --border-gray: #cccccc;
+  --border-theme-light:#f7ae65;
+  --border-theme:#ff9e3d;
+  --border-theme-dark: #ff8b17;
+  --font-black: #000000;
+  --font-gray: #888888;
+  --font-white: #ffffff;
+  --font-theme: #ff9e3d;
+  --font-theme-dark: #ff8b17;
+  --font-theme-light: #f7ae65;
+  --shadow: #aaaaaa;
+}
+
+.content-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  transform: translate(-50%, -65%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  transform: scale(0.5);
+  margin: -30px 0;
+}
+
+h1 {
+  font-size: 2.5em;
+  cursor: pointer;
+  color: var(--font-theme-dark);
+  margin: 0;
+}
+
+h2, h3 {
+  color: var(--font-theme);
+  margin: 0;
+}
+
+hr {
+  width: 410px;
+  border: 3px solid var(--theme);
+  border-radius: 1vh;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}
+
+.button {
+  height: 2.5rem;
+  width: 15rem;
+  background-color: var(--button-theme);
+  border-radius: 2.5em;
+  border: None;
+  color: var(--font-white);
+  font-weight: bolder;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  border: 2px solid var(--border-theme-light);
+  background-color: var(--button-theme-hover);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: car(--font-black);
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.fa-github {
+  margin-bottom: -2px;
+  margin-left: 5px;
+  color: var(--font-black);
+  font-size: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.fa-github:hover {
+  transform: rotate(360deg) scale(1.2);
+}
