@@ -49,7 +49,7 @@ def send_email(receiver_email, contractor_name, template):
 def get_contractors():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT email, location FROM users WHERE is_contractor == TRUE')
+    cur.execute('SELECT email, location, radius FROM users WHERE is_contractor = TRUE')
     conn.commit()
     contractors = cur.fetchall()
     cur.close()
@@ -68,7 +68,7 @@ def filter_for_relevant_request_emails(help_request, contractors):
     ret = dict()
 
     for contractor in contractors:
-        if get_filtered_ticks(contractor["location"], help_request["location"], contractor["radius"]):
+        if get_filtered_ticks(contractor[1], help_request["location"], contractor[2]):
             help_request["contractor_name"] = contractor["first_name"]
             ret[contractor["email"]] = help_request
 
