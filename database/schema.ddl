@@ -8,7 +8,7 @@ CREATE TABLE users (
   first_name varchar (50) NOT NULL,
   last_name varchar (50) NOT NULL,
   email varchar (50) NOT NULL,
-  passord varchar (50) NOT NULL,
+  password varchar (50) NOT NULL,
   location varchar (100),
   is_contractor BOOLEAN NOT NULL,
   radius INTEGER
