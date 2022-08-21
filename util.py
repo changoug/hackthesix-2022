@@ -1,12 +1,18 @@
+from sys import pycache_prefix
 import psycopg2
 from flask import request
+from config import config
 import os
 
 def get_db_connection():
-    conn = psycopg2.connect(host='localhost',
-                            database='flask_db',
-                            user=os.environ['DB_USERNAME'],
-                            password=os.environ['DB_PASSWORD'])
+    # conn = psycopg2.connect(host='localhost',
+    #                         database='flask_db',
+    #                         user=os.environ['DB_USERNAME'],
+    #                         password=os.environ['DB_PASSWORD'])
+    params = config()
+    return psycopg2.connect(**params)
+
+
     return conn
 
 def get_filtered_ticks(origin, dest, radius):
