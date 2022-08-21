@@ -32,6 +32,16 @@
   color: var(--font-white)
 }
 
+.sidebar {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max(25vw, 335px);
+  height: 100vh;
+  background-color: var(--theme);
+}
+
 .sign-out-button {
   z-index: 2;
   position: absolute;
@@ -82,14 +92,4 @@
 .create-post-button:hover {
   background-color: var(--button-hover);
   box-shadow: 0 2px 6px var(--shadow);
-}
-
-.sidebar {
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: max(25vw, 335px);
-  height: 100vh;
-  background-color: var(--theme);
 }

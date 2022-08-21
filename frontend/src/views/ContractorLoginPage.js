@@ -8,6 +8,10 @@ function LandingPage() {
     const path = "/create-account";
     navigate(path);
   };
+  const mapRouteChange = () => {
+    const path = "/map";
+    navigate(path);
+  };
 
   return (
     <div>
@@ -31,7 +35,9 @@ function LandingPage() {
               type="password"
             ></input>
             <hr />
-            <button className="login-button">Login</button>
+            <button className="login-button" onClick={mapRouteChange}>
+              Login
+            </button>
             <p className="createAccountText">
               Don't have an account?{" "}
               <span
