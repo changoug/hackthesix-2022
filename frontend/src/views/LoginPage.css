@@ -40,7 +40,7 @@
   justify-content: center;
   align-items: center;
 }
-.center-div {
+.left .center-div {
   width: 375px
 }
 .login {
