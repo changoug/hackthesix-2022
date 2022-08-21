@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Map from "../imgs/Map.jpg";
+import Map from "../assets/map.jpg";
 
 import "./LoginPage.css";
 
