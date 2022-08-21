@@ -20,7 +20,7 @@ const MapInterface = () => {
   const [requests, setRequests] = useState();
 
   useEffect(() => {
-    axios.get(baseURL + '/helpRequests', { withCredentials: false }).then((response) => {
+    axios.get(baseURL + '/helpRequests', { withCredentials: true }).then((response) => {
       setRequests(response.data);
       console.log(response.data);
     });

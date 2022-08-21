@@ -174,7 +174,7 @@ def logout():
 #     conn.close()
 #     return tables
 
-@api.route('/helpRequests', methods=['GET', 'POST', 'PATCH'])
+@api.route('/helpRequests', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 
 def handle_help_requests():

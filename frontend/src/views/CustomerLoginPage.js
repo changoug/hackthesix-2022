@@ -21,7 +21,7 @@ function LandingPage() {
       .post(baseURL + '/login', {
         email: email,
         password: password
-      }, { withCredentials: false })
+      }, { withCredentials: true })
       .then((response) => {
         setRes(response);
         console.log(response)
