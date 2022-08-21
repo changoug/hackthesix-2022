@@ -45,9 +45,8 @@ from util import *
 # ]
 
 def trigger_email_creation(help_request):
-    # help_requests = requests.get('https://localhost:5000/helpRequests').json()
-    # contractors = get_contractors()
+    help_requests = requests.get('https://localhost:5000/helpRequests').json()
+    contractors = get_contractors()
 
     emails_to_be_sent = filter_for_relevant_request_emails(help_request, contractors)
-    print(emails_to_be_sent)
     send_emails(emails_to_be_sent)
