@@ -24,9 +24,6 @@ def register():
     user_country = request.form["country"]
     user_is_contractor = request.form["is_contractor"]
     user_radius = request.form["radius"]
-    
-    conn = get_db_connection()
-    cur = conn.cursor()
 
     # If user misses input field.
     if not (user_firstname and user_lastname and user_password and user_email and user_unit and user_street and user_city and user_country):
@@ -66,7 +63,7 @@ def login():
     cur = conn.cursor()
 
     cur.execute(f"SELECT * FROM users WHERE email = '{email}' AND password = '{password}'")
-    rows = cur.fetchall()["user_id"]
+    rows = cur.fetchall()[0]
 
     if rows == None:
         cur.close()
