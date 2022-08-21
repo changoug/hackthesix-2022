@@ -21,12 +21,14 @@ function LandingPage() {
               className="email input"
               placeholder="example@email.com"
               id="#email"
+              type="email"
             ></input>
             <span className="label">Password</span>
             <input
               className="password input"
               placeholder="e.g. ilovedavid"
               id="#password"
+              type="password"
             ></input>
             <hr />
             <button className="login-button">Login</button>

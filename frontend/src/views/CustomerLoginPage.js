@@ -23,12 +23,14 @@ function LandingPage() {
               className="email input"
               placeholder="example@email.com"
               id="#email"
+              type="email"
             ></input>
             <span className="label">Password</span>
             <input
               className="password input"
               placeholder="e.g. ilovedavid"
               id="#password"
+              type="password"
             ></input>
             <hr className="divider" />
             <button className="login-button" onClick={() => navigate("/map", { replace: true })}>Login</button>
