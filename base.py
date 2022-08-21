@@ -85,8 +85,8 @@ def get_db_values():
                                     'location varchar (100)',
                                     'is_contractor BOOLEAN NOT NULL,'
     )
-    cur.execute('DROP TABLE IF EXISTS requests;')
-    cur.execute('CREATE TABLE requests (request_id varchar (100) PRIMARY KEY NOT NULL,',
+    cur.execute('DROP TABLE IF EXISTS request;')
+    cur.execute('CREATE TABLE request (request_id varchar (100) PRIMARY KEY NOT NULL,',
                                     'user_id varchar (50) NOT NULL,',
                                     'title varchar (50) NOT NULL,'
                                     'description varchar (50) NOT NULL,'
@@ -182,7 +182,7 @@ def handle_help_requests():
     elif request.method == 'POST':
         request_id = uuid.uuid4()
         title = 'Clogged toilet'
-        description = 'Help! My toilet is clogged! I cannot poop properly!'
+        description = 'Help! My toilet is clogged!'
         location = 'Toronto'
         contact_info = '911'
         compensation = '$100'
@@ -192,6 +192,10 @@ def handle_help_requests():
                     'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
                     (request_id, title, description, location, contact_info, compensation, user_id, False)
                     )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return f'Request {request_id} created'
 
     # patch a help request
     elif request.method == 'PATCH':
@@ -201,4 +205,4 @@ def handle_help_requests():
         conn.commit()
         cur.close()
         conn.close()
-        return f'Request {request_id} created'
+        return f'Request {request_id} is set to completed'
