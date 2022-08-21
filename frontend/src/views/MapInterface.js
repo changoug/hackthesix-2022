@@ -8,13 +8,27 @@ const MapInterface = () => {
   
   const [helpLocation, setHelpLocation] = useState({})
 
-  // const [requests, setRequests] = useState();
+  const [requests, setRequests] = useState();
 
-  // useEffect(() => {
-  //   axios.get(baseURL).then((response) => {
-  //     setRequests(response.data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    axios.get(baseURL + '/helpRequests', { withCredentials: false }).then((response) => {
+      setRequests(response.data);
+      console.log(response.data);
+    });
+  }, []);
+
+  // for (let i = 0; i < requests.length; i++) {
+  //   requests[i] = 
+  //             {
+  //               title: requests[2],
+  //               description: requests[3],
+  //               location: requests[4],
+  //               contact: {
+  //                 phone: requests[5],
+  //                 email: requests[6]
+  //               }
+  //             };
+  // }
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -36,34 +50,34 @@ const MapInterface = () => {
   lng: -38.523
   };
 
-  const helpRequests = [
-    {
-      title: "Clogged Toilet",
-      description: "Help me unclog toilet!",
-      location: {
-        lat: -3.745,
-        lng: -38.523
-      },
-      contact: {
-        phone: "647-647-6477",
-        email: "myemail@gmail.com"
-      }
-    },
-    {
-      title: "Clogged Urinal",
-      description: "Help me unclog urinal!",
-      location: {
-        lat: 43.66336,
-        lng: -79.3870336
-      },
-      contact: {
-        phone: "647-647-6477",
-        email: "myemail@gmail.com"
-      }
-    }
-  ];
+  // const helpRequests = [
+  //   {
+  //     title: "Clogged Toilet",
+  //     description: "Help me unclog toilet!",
+  //     location: {
+  //       lat: -3.745,
+  //       lng: -38.523
+  //     },
+  //     contact: {
+  //       phone: "647-647-6477",
+  //       email: "myemail@gmail.com"
+  //     }
+  //   },
+  //   {
+  //     title: "Clogged Urinal",
+  //     description: "Help me unclog urinal!",
+  //     location: {
+  //       lat: 43.66336,
+  //       lng: -79.3870336
+  //     },
+  //     contact: {
+  //       phone: "647-647-6477",
+  //       email: "myemail@gmail.com"
+  //     }
+  //   }
+  // ];
 
-  return ( isLoaded ? (
+  return ( isLoaded && requests ? (
       <GoogleMap
           center={center}
           mapContainerStyle={containerStyle}
@@ -71,17 +85,18 @@ const MapInterface = () => {
           options={defaultMapOptions}
           onClick={() => setHelpLocation({})}
       >
-          {
-            helpRequests.map(item => {
-              return (
-                <Marker 
-                position={item.location}
-                onClick={() => {
-                  setHelpLocation(item);
-                }}
-                />
-              )
-            })
+          {requests && (
+              requests.map(item => {
+                return (
+                  <Marker 
+                  position={item.location}
+                  onClick={() => {
+                    setHelpLocation(item);
+                  }}
+                  />
+                )
+              })
+          )
           }
           {
             helpLocation.location && (
