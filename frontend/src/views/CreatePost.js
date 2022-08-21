@@ -1,64 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
+import AddImage from "../components/AddImage";
+
 import "./CreatePost.css";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
 function CreatePost() {
-  const [age, setAge] = React.useState("");
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-
-  const [postTitle, setPostTitle] = useState("");
   return (
-    <div>
-      <div className="main-create">
-        <div className="center-div">
-          <form className="form-div">
-            <span className="">Upload Images</span>
-            <span className="title-label">Title</span>
-            <input className="title"></input>
-            <span className="">Location</span>
-            <input className="location"></input>
+    <div className="main-create">
+      <div className="center-div">
+        <form className="post-form">
+          <span className="images-label">Upload Images</span>
+          <div className="images-container">
+            <AddImage imageId="1" />
+            <AddImage imageId="2" />
+            <AddImage imageId="3" />
+            <AddImage imageId="4" />
+          </div>
+          <span className="title-label">Title</span>
+          <input className="title"></input>
+          <span className="">Location</span>
+          <input className="location"></input>
 
-            <span className="category-label">Category</span>
-            <select>
-              <option>Custom</option>
-              <option>Bath</option>
-              <option>Kitchen</option>
-              <option>Ceiling</option>
-            </select>
-            <span className="price-label">Price</span>
-
-            <input></input>
-            <span className="description-label">Description</span>
-            <textarea></textarea>
-            <button>Next</button>
-          </form>
-        </div>
-      </div>
-
-      <div className="preview">
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={age}
-              label="Age"
-              onChange={handleChange}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
+          <span className="category-label">Category</span>
+          <select>
+            <option>Select</option>
+            <option>Bath</option>
+            <option>Kitchen</option>
+            <option>Ceiling</option>
+          </select>
+          <span className="phone-number-label">Phone Number</span>
+          <input className="phone-number"></input>
+          <span className="price-label">Price</span>
+          <input className="price"></input>
+          <span className="description-label">Description</span>
+          <textarea className="description"></textarea>
+          <button className="next-button">Next</button>
+        </form>
       </div>
     </div>
   );

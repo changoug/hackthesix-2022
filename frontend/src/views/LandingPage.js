@@ -11,8 +11,12 @@ const LandingPage = () => {
     const path = "/";
     navigate(path);
   };
-  const loginRouteChange = () => {
-    const path = "/login";
+  const customerRouteChange = () => {
+    const path = "/customer-login";
+    navigate(path);
+  };
+  const contractorRouteChange = () => {
+    const path = "/contractor-login";
     navigate(path);
   };
 
@@ -23,14 +27,21 @@ const LandingPage = () => {
         <img className="logo" src={logo} alt="Warepair Logo" />
         <h2>All your repairs in one click.</h2>
         <h3>Connecting local contractors with your reparis.</h3>
-        <hr />
+        <hr className="landing-page-divider" />
         <div className="button-container">
           <button
             id="customer-login"
             className="button"
-            onClick={loginRouteChange}
+            onClick={customerRouteChange}
           >
-            Login
+            Customer Login
+          </button>
+          <button
+            id="contractor-login"
+            className="button"
+            onClick={contractorRouteChange}
+          >
+            Contractor Login
           </button>
         </div>
       </div>

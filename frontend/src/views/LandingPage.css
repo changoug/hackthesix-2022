@@ -50,8 +50,8 @@ h2, h3 {
   margin: 0;
 }
 
-hr {
-  width: 410px;
+.landing-page-divider {
+  width: 600px;
   border: 3px solid var(--theme);
   border-radius: 1vh;
 }
@@ -60,7 +60,7 @@ hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 30px;
 }
 
 .button {
@@ -76,7 +76,6 @@ hr {
 }
 
 .button:hover {
-  border: 2px solid var(--border-theme-light);
   background-color: var(--button-theme-hover);
   box-shadow: 0 1px 3px var(--shadow);
 }
