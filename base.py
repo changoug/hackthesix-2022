@@ -1,7 +1,4 @@
 from flask import Flask, session, request
-import requests
-import os
-import psycopg2
 import uuid
 from util import get_db_connection, get_filtered_ticks
 
@@ -29,8 +26,8 @@ def register():
     cur = conn.cursor()
 
     # If user already exists.
-    rows = cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
-    if len(rows) == 1:
+    cur.execute("SELECT * FROM users WHERE email = :email", email=user_email)
+    if len(cur.fetchall()) == 1:
         cur.close()
         conn.close()
         return
@@ -102,13 +99,13 @@ def get_db_values():
                                     'email varchar (50) NOT NULL,'
                                     'password varchar (50) NOT NULL,'
                                     'location varchar (100)',
-                                    'is_contractor tinyint(1) NOT NULL,'
+                                    'is_contractor BOOLEAN NOT NULL,'
     )
     cur.execute('DROP TABLE IF EXISTS requests;')
     cur.execute('CREATE TABLE requests (request_id varchar (100) PRIMARY KEY NOT NULL,',
                                     'user_id varchar (50) NOT NULL,',
                                     'title varchar (50) NOT NULL,'
-                                    'request description varchar (50) NOT NULL,'
+                                    'description varchar (50) NOT NULL,'
                                     'location varchar (100) NOT NULL,'
                                     'contact_info varchar (100) NOT NULL,'
                                     'compensation varchar (50) NOT NULL,'
@@ -120,14 +117,14 @@ def get_db_values():
     conn.close()
     return tables
 
-@api.route('/helpRequests', methods=['GET', 'POST', 'DELETE'])
+@api.route('/helpRequests', methods=['GET', 'POST', 'PATCH'])
 def handle_help_requests():
     conn = get_db_connection()
     cur = conn.cursor()
 
     # get all help requests
     if request.method == 'GET':
-        cur.execute('SELECT * FROM requests;')
+        cur.execute('SELECT * FROM requests WHERE (is_complete == FALSE AND user_id == %s);', session["user_id"])
         help_requests = cur.fetchall()
 
         return help_requests
@@ -147,10 +144,10 @@ def handle_help_requests():
                     (request_id, title, description, location, contact_info, compensation, user_id)
                     )
 
-    # delete a help request
-    elif request.method == 'DELETE':
+    # patch a help request
+    elif request.method == 'PATCH':
         request_id = request.form.get("request_id")
-        cur.execute('DELETE FROM requests WHERE request_id = %s', (request_id,))
+        cur.execute('UPDATE requests SET is_complete == TRUE WHERE request_id = %s', (request_id))
 
     cur.close()
     conn.close()
