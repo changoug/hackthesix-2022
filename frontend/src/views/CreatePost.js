@@ -24,9 +24,12 @@ function CreatePost() {
             <AddImage imageId="4" />
           </div>
           <span className="title-label">Title</span>
-          <input className="title"></input>
+          <input className="title" placeholder="Clogged Toilet"></input>
           <span className="">Location</span>
-          <input className="location"></input>
+          <input
+            className="location"
+            placeholder="Guatemala City, Guatemala"
+          ></input>
 
           <span className="category-label">Category</span>
           <select>
@@ -34,13 +37,20 @@ function CreatePost() {
             <option>Bath</option>
             <option>Kitchen</option>
             <option>Ceiling</option>
+            <option>Lawn</option>
+            <option>Kitchen</option>
+            <option>Basement</option>
+            <option>Roof</option>
           </select>
           <span className="phone-number-label">Phone Number</span>
-          <input className="phone-number"></input>
+          <input className="phone-number" placeholder="123-567-7890"></input>
           <span className="price-label">Price</span>
-          <input className="price"></input>
+          <input className="price" placeholder="$ 999"></input>
           <span className="description-label">Description</span>
-          <textarea className="description"></textarea>
+          <textarea
+            className="description"
+            placeholder="URGENT: need toilet unclogged immedietely."
+          ></textarea>
           <div className="button-container">
             <button classname="cancel-button" onClick={mapRouteChange}>
               Cancel
