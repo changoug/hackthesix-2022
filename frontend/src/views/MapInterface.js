@@ -18,6 +18,8 @@ const MapInterface = () => {
   const [helpLocation, setHelpLocation] = useState({});
 
   const [requests, setRequests] = useState();
+  //const [center, setCenter] = useState();
+  const [map, setMapInstance] = useState();
 
   useEffect(() => {
     axios.get(baseURL + '/helpRequests', { withCredentials: true }).then((response) => {
@@ -86,33 +88,6 @@ const MapInterface = () => {
   //   }
   // ];
 
-  const helpRequests = [
-    {
-      title: "Clogged Toilet",
-      description: "Help me unclog toilet!",
-      location: {
-        lat: -3.745,
-        lng: -38.523,
-      },
-      contact: {
-        phone: "647-647-6477",
-        email: "myemail@gmail.com",
-      },
-    },
-    {
-      title: "Clogged Urinal",
-      description: "Help me unclog urinal!",
-      location: {
-        lat: 43.66336,
-        lng: -79.3870336,
-      },
-      contact: {
-        phone: "647-647-6477",
-        email: "myemail@gmail.com",
-      },
-    },
-  ];
-
   const navigate = useNavigate();
   const landingRouteChange = () => {
     const path = "/";
@@ -123,7 +98,7 @@ const MapInterface = () => {
     navigate(path);
   };
 
-  return isLoaded && requests ? (
+  return requests ? (
     <div className="main-container">
       <p className="warepair">Warepair</p>
       <button className="sign-out-button" onClick={landingRouteChange}>
@@ -145,20 +120,24 @@ const MapInterface = () => {
         zoom={15}
         options={defaultMapOptions}
         onClick={() => setHelpLocation({})}
+        onLoad={(map) => setTimeout(() => setMapInstance(map))}
       >
-        {helpRequests.map((item) => {
+        {requests && map && 
+          requests.map((item) => {
+          let pos = {lat: parseFloat(item[6]), lng: parseFloat(item[5])}
+          console.log(center);
           return (
             <Marker
-              position={item.location}
+              position={pos}
               onClick={() => {
                 setHelpLocation(item);
               }}
             />
           );
         })}
-        {helpLocation.location && (
+        {helpLocation[4] && (
           <InfoWindow
-            position={helpLocation.location}
+            position={{lat: parseFloat(helpLocation[6]), lng: parseFloat(helpLocation[5])}}
             clickable={true}
             onCloseClick={() => setHelpLocation({})}
           >
@@ -171,10 +150,9 @@ const MapInterface = () => {
                 alt="Clogged Toilet"
                 style={{ marginTop: 10 }}
               />
-              <h2>{helpLocation.title}</h2>
-              <p>{helpLocation.contact.phone}</p>
-              <p>{helpLocation.contact.email}</p>
-              <p>{helpLocation.description}</p>
+              <h2>{helpLocation[2]}</h2>
+              <p>{helpLocation[7]}</p>
+              <p>{helpLocation[3]}</p>
             </div>
           </InfoWindow>
         )}
