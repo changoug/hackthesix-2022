@@ -1,6 +1,5 @@
 import requests
 import json
-from base import handle_help_requests
 from util import *
 
 # help_request = {
