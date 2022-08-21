@@ -1,7 +1,5 @@
---- Warepair Schema
-
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS request CASCADE;
+DROP TABLE IF EXISTS requests CASCADE;
 
 CREATE TABLE users (
   user_id uuid PRIMARY KEY NOT NULL,
@@ -14,11 +12,11 @@ CREATE TABLE users (
   radius INTEGER
 );
 
-CREATE TABLE request (
+CREATE TABLE requests (
   request_id uuid PRIMARY KEY NOT NULL,
   user_id varchar (50),
-  title varchar (50) NOT NULL,
-  request_description varchar (50) NOT NULL,
+  title varchar (250) NOT NULL,
+  request_description varchar (250) NOT NULL,
   location varchar (100) NOT NULL,
   contact_info varchar (100) NOT NULL,
   compensation varchar (50) NOT NULL,
