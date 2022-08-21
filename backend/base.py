@@ -66,12 +66,15 @@ def login():
     cur = conn.cursor()
 
     cur.execute(f"SELECT * FROM users WHERE email = '{email}' AND password = '{password}'")
-    rows = cur.fetchall()
+    rows = cur.fetchall()["user_id"]
 
     if rows == None:
         cur.close()
         conn.close()
         return 'Email and password do not match'
+
+    session["user_id"] = rows
+    return 'Logged in'
     
 @api.route('/test', methods=['GET'])
 def get_db_values():
