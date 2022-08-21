@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import uuid
 from util import get_db_connection, get_filtered_ticks
+from emailjs import trigger_email_creation
 
 api = Flask(__name__)
 api.config['SECRET_KEY'] = 'secret'
@@ -192,6 +193,15 @@ def handle_help_requests():
                     'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
                     (request_id, title, description, location, contact_info, compensation, user_id, False)
                     )
+        trigger_email_creation({
+            "request_id": request_id,
+            "title": title,
+            "description": description,
+            "location": location,
+            "contact_info": contact_info,
+            "compensation": compensation,
+            "user_id": user_id
+        })
 
     # patch a help request
     elif request.method == 'PATCH':
