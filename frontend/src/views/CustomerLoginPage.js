@@ -33,7 +33,7 @@ function LandingPage() {
               type="password"
             ></input>
             <hr className="divider" />
-            <button className="login-button">Login</button>
+            <button className="login-button" onClick={() => navigate("/map", { replace: true })}>Login</button>
             <p className="createAccountText">
               Don't have an account?{" "}
               <span
