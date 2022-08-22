@@ -1,5 +1,7 @@
 # Getting Started with Create React App
 
+![landing page](/assets/Map%20Interface.png)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

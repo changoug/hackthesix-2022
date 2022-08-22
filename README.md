@@ -1,6 +1,7 @@
 # Warepair
 
 ![Login Page](imgs/1.png)
+![Map Interface](assets/Map_Interface.png)
 
 ## [Check it out on Heroku](https://warepair.herokuapp.com/)
 

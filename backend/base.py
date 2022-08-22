@@ -5,6 +5,8 @@ import uuid
 from util import get_db_connection, get_filtered_ticks
 from emailjs import trigger_email_creation
 from flask_cors import CORS, cross_origin
+from geopy.geocoders import Nominatim
+geolocator = Nominatim(user_agent="google.com")
 
 api = Flask(__name__)
 api.config['SECRET_KEY'] = 'secret'
@@ -98,7 +100,7 @@ def get_db_values():
     cur.execute('CREATE TABLE request (request_id varchar (100) PRIMARY KEY NOT NULL,',
                                     'user_id varchar (50) NOT NULL,',
                                     'title varchar (50) NOT NULL,'
-                                    'description varchar (50) NOT NULL,'
+                                    'description varchar (250) NOT NULL,'
                                     'location varchar (100) NOT NULL,'
                                     'contact_info varchar (100) NOT NULL,'
                                     'compensation varchar (50) NOT NULL,'
@@ -196,15 +198,17 @@ def handle_help_requests():
     elif request.method == 'POST':
         request_id = uuid.uuid4()
         title = request.form["title"]
-        description = request.form["description"]
+        description = request.form["request_description"]
         location = request.form["location"]
+        lng = str(geolocator.geocode(location).longitude)
+        lat = str(geolocator.geocode(location).latitude)
         contact_info = request.form["contact_info"]
         compensation = request.form["compensation"]
         user_id = session["user_id"]
         
-        cur.execute('INSERT INTO requests (request_id, title, request_description, location, contact_info, compensation, user_id, is_complete)'
-                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-                    (request_id, title, description, location, contact_info, compensation, user_id, False)
+        cur.execute("""INSERT INTO requests (request_id, title, request_description, location, lng, lat, contact_info, compensation, user_id, is_complete)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (request_id, title, description, location, lng, lat, contact_info, compensation, user_id, False)
                     )
         trigger_email_creation({
             "request_id": request_id,
@@ -229,3 +233,15 @@ def handle_help_requests():
         cur.close()
         conn.close()
         return f'Request {request_id} is set to completed'
+
+@api.route('/userCenter', methods=['GET'])
+def userCenter():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM users WHERE user_id = '{session['user_id']}'")
+    ret = dict()
+    ret["lat"] = geolocator.geocode(cur.fetchall()[0][5].replace(",", "")).latitude
+    ret["lng"] = geolocator.geocode(cur.fetchall()[0][5].replace(",", "")).longitude
+    cur.close()
+    conn.close()
+    return jsonify(ret)
